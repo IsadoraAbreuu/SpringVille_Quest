@@ -1,0 +1,12 @@
+.container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  padding: 16px;
+  margin: 10px 0;
+  font-size: 18px;
+  border-radius: 10px;
+}
