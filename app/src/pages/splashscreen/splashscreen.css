@@ -1,0 +1,45 @@
+.splashscreen {
+	position: fixed;
+	inset: 0;
+	z-index: 20;
+	overflow: hidden;
+	background: #d7ecff;
+	will-change: opacity;
+}
+
+.splashscreen__background {
+	position: absolute;
+	inset: 0;
+	background-image: url('../../assets/images/fundo-springville.png');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 0%;
+	transform: scale(1.16);
+	transform-origin: center top;
+	will-change: transform, background-position;
+}
+
+.splashscreen__overlay {
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 42%, rgba(255,255,255,0.02) 100%);
+	backdrop-filter: blur(2px);
+	will-change: opacity;
+}
+
+.splashscreen__loader-area {
+	position: relative;
+	z-index: 1;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.splashscreen__donut {
+	width: min(164px, 36vw);
+	height: auto;
+	animation: springvilleSpin 2.6s linear infinite;
+	filter: drop-shadow(0 12px 24px rgba(24, 86, 149, 0.18));
+	will-change: transform, opacity;
+}
