@@ -12,6 +12,7 @@ export default function Home({
 }) {
   const [isLogoLockedVisible, setIsLogoLockedVisible] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  const [isSceneDropping, setIsSceneDropping] = useState(false);
   const clampedLogoReveal = Math.min(Math.max(logoReveal, 0), 1);
 
   useEffect(() => {
@@ -20,34 +21,50 @@ export default function Home({
     }
   }, [clampedLogoReveal]);
 
+  useEffect(() => {
+    if (!isSceneDropping) {
+      return undefined;
+    }
+
+    const transitionTimer = window.setTimeout(() => {
+      setHasSeenIntro(true);
+    }, 860);
+
+    return () => {
+      window.clearTimeout(transitionTimer);
+    };
+  }, [isSceneDropping]);
+
   const resolvedLogoReveal = isLogoLockedVisible ? 1 : clampedLogoReveal;
   const isIntroVisible = resolvedLogoReveal >= 0.72 || isLogoLockedVisible;
+  const isGameIntroVisible = isIntroVisible && !isSceneDropping;
   const isCarouselVisible = isIntroVisible && hasSeenIntro;
+  const isSceneAtBottom = isSceneDropping || hasSeenIntro;
 
   const handlePlay = (characterId) => {
 		onStartGame?.(characterId);
 	};
 
 	const handleIntroFinish = () => {
-		setHasSeenIntro(true);
+		setIsSceneDropping(true);
 	};
 
   return (
-    <main className="homepage">
+    <main className={`homepage${isSceneAtBottom ? ' homepage--scene-bottom' : ''}`}>
       <div aria-hidden="true" className="homepage__background" />
       <div className="homepage__overlay" />
 		<div className="homepage__content">
-			<header className={`homepage__header${isCarouselVisible ? ' homepage__header--compact' : ''}`}>
+			<header className={`homepage__header${isSceneAtBottom ? ' homepage__header--compact' : ''}`}>
         <img
           src={logoSpringville}
           alt="SpringVille"
-          className={`homepage__logo${resolvedLogoReveal > 0 ? ' homepage__logo--visible' : ''}${isCarouselVisible ? ' homepage__logo--compact' : ''}`}
+          className={`homepage__logo${resolvedLogoReveal > 0 ? ' homepage__logo--visible' : ''}${isSceneAtBottom ? ' homepage__logo--compact' : ''}`}
         />
 			</header>
 
       {!hasSeenIntro && (
         <GameIntro
-          isVisible={isIntroVisible}
+          isVisible={isGameIntroVisible}
           onFinish={handleIntroFinish}
         />
       )}

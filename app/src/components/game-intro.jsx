@@ -1,5 +1,7 @@
 import './game-intro.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import bartClosed from '../assets/images/bart-fechado.png';
+import bartOpen from '../assets/images/bart-aberto.png';
 
 const INTRO_STEPS = [
 	{
@@ -24,9 +26,25 @@ const INTRO_STEPS = [
 
 export default function GameIntro({ isVisible, onFinish }) {
 	const [currentStepIndex, setCurrentStepIndex] = useState(0);
+	const [isBartTalking, setIsBartTalking] = useState(false);
 	const currentStep = INTRO_STEPS[currentStepIndex];
 	const isFirstStep = currentStepIndex === 0;
 	const isLastStep = currentStepIndex === INTRO_STEPS.length - 1;
+
+	useEffect(() => {
+		if (!isVisible) {
+			setIsBartTalking(false);
+			return undefined;
+		}
+
+		const talkingInterval = window.setInterval(() => {
+			setIsBartTalking((prev) => !prev);
+		}, 320);
+
+		return () => {
+			window.clearInterval(talkingInterval);
+		};
+	}, [isVisible, currentStepIndex]);
 
 	const goToPreviousStep = () => {
 		setCurrentStepIndex((prev) => Math.max(prev - 1, 0));
@@ -42,7 +60,8 @@ export default function GameIntro({ isVisible, onFinish }) {
 
 	return (
 		<section className={`game-intro${isVisible ? ' game-intro--visible' : ''}`} aria-label="Introducao do jogo">
-			<div className="game-intro__balloon">
+			{/* Bart agora está do lado direito, surgindo */}
+			<div className="game-intro__balloon game-intro__balloon--right">
 				<p className="game-intro__accent">{currentStep.accent}</p>
 				<h2 className="game-intro__title">{currentStep.title}</h2>
 				<p className="game-intro__text">{currentStep.text}</p>
@@ -78,6 +97,18 @@ export default function GameIntro({ isVisible, onFinish }) {
 						)}
 					</div>
 				</div>
+			</div>
+			<div className="game-intro__character game-intro__character--right" aria-hidden="true">
+				<img
+					src={bartClosed}
+					alt=""
+					className={`game-intro__bart game-intro__bart--closed${!isBartTalking ? ' game-intro__bart--visible' : ''}`}
+				/>
+				<img
+					src={bartOpen}
+					alt=""
+					className={`game-intro__bart game-intro__bart--open${isBartTalking ? ' game-intro__bart--visible' : ''}`}
+				/>
 			</div>
 		</section>
 	);

@@ -40,26 +40,16 @@ export default function Splashscreen({ isExiting, onRevealProgress, onExitComple
 					0.08,
 				)
 				.to(
-					backgroundRef.current,
-					{
-						backgroundPosition: '50% 100%',
-						scale: 1.04,
-						duration: 1.9,
-						ease: 'power3.inOut',
-					},
-					0.12,
-				)
-				.to(
 					progressState,
 					{
 						value: 1,
-						duration: 1.35,
+						duration: 1.05,
 						ease: 'power2.out',
 						onUpdate: () => {
 							onRevealProgressRef.current?.(progressState.value);
 						},
 					},
-					0.62,
+					0.28,
 				)
 				.to(
 					wrapperRef.current,
@@ -72,7 +62,7 @@ export default function Splashscreen({ isExiting, onRevealProgress, onExitComple
 							onExitCompleteRef.current?.();
 						},
 					},
-					1.58,
+					1.12,
 				);
 		}, wrapperRef);
 

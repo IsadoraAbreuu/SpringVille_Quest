@@ -16,9 +16,18 @@
 	background-image: url('../../assets/images/fundo-springville.png');
 	background-repeat: no-repeat;
 	background-size: cover;
+	background-position: 50% 0%;
+	transform: scale(1.16);
+	transform-origin: center top;
+	transition:
+		background-position 1350ms cubic-bezier(0.76, 0, 0.24, 1),
+		transform 1350ms cubic-bezier(0.76, 0, 0.24, 1);
+	will-change: background-position, transform;
+}
+
+.homepage--scene-bottom .homepage__background {
 	background-position: 50% 100%;
 	transform: scale(1.04);
-	transform-origin: center top;
 }
 
 .homepage__overlay {
@@ -77,6 +86,19 @@
 	.homepage__content {
 		gap: 16px;
 		min-height: calc(100vh - 46px);
+	}
+
+	.homepage__background {
+		background-position: 52% 12%;
+		transform: scale(1.14);
+		transition:
+			background-position 1050ms cubic-bezier(0.32, 0.72, 0.2, 1),
+			transform 1050ms cubic-bezier(0.32, 0.72, 0.2, 1);
+	}
+
+	.homepage--scene-bottom .homepage__background {
+		background-position: 52% 86%;
+		transform: scale(1.05);
 	}
 
 	.homepage__logo {
