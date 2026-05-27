@@ -1,7 +1,7 @@
 .splashscreen {
 	position: fixed;
 	inset: 0;
-	z-index: 20;
+	z-index: 300;
 	overflow: hidden;
 	background: #d7ecff;
 	will-change: opacity;

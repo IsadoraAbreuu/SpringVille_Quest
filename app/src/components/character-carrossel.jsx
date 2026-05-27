@@ -1,4 +1,5 @@
 import './character-carrossel.css';
+import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import bartIdle from '../assets/images/personagens/bart.svg';
 import bartActive from '../assets/images/personagens/bart2.svg';
 import homerIdle from '../assets/images/personagens/homer.svg';
@@ -121,6 +122,7 @@ export default function CharacterCarousel({
 					</div>
 
 					<button type="button" className="character-carousel__play" onClick={handlePlay}>
+						<Play aria-hidden="true" />
 						Jogar com {activeCharacter.name}
 					</button>
 				</div>
@@ -131,7 +133,7 @@ export default function CharacterCarousel({
 					onClick={showPreviousCharacter}
 					aria-label="Ver personagem anterior"
 				>
-					&lt;
+					<ChevronLeft aria-hidden="true" />
 				</button>
 
 				<div className="character-carousel__track" role="list">
@@ -174,7 +176,7 @@ export default function CharacterCarousel({
 					onClick={showNextCharacter}
 					aria-label="Ver proximo personagem"
 				>
-					&gt;
+					<ChevronRight aria-hidden="true" />
 				</button>
 			</div>
 		</section>

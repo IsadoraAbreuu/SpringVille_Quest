@@ -1,0 +1,670 @@
+.location-page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(16, 43, 58, 0.8), rgba(16, 43, 58, 0.26)),
+    var(--location-bg) center / cover no-repeat;
+  color: #17202a;
+  font-family: Arial, sans-serif;
+}
+
+.location-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 216, 74, 0.2), rgba(255, 255, 255, 0.08)),
+    rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+.location-shell {
+  position: relative;
+  z-index: 1;
+  width: min(980px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 22px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+.location-topbar {
+  position: absolute;
+  top: 22px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.location-back,
+.task-submit,
+.answer-option,
+.order-actions button {
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 900;
+}
+
+.location-back {
+  min-height: 42px;
+  padding: 0 16px;
+  background: #f14f3f;
+  color: white;
+  box-shadow: 0 5px 0 #b93024;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.location-back svg,
+.order-actions button svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 3;
+}
+
+.location-stats {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px;
+  border: 2px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background: rgba(22, 34, 42, 0.82);
+  color: white;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26);
+}
+
+.location-stats::before {
+  content: "$";
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #ffd93d;
+  color: #8c5400;
+  font-weight: 900;
+  box-shadow: inset 0 0 0 3px #e7a300;
+}
+
+.location-stats span {
+  opacity: 0.86;
+  font-size: 0.9rem;
+}
+
+.location-stats strong {
+  color: #ffd93d;
+}
+
+.location-stats small {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.quest-panel {
+  width: min(720px, 100%);
+  margin-top: 76px;
+  padding: clamp(20px, 4vw, 34px);
+  border: 3px solid rgba(255, 255, 255, 0.82);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.28);
+}
+
+.quest-kicker {
+  margin: 0 0 10px;
+  color: #c04618;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.quest-panel h1 {
+  margin: 0;
+  color: #103c63;
+  font-size: clamp(2rem, 5vw, 3.1rem);
+  line-height: 1;
+}
+
+.quest-subtitle {
+  margin: 12px 0 0;
+  color: #31526b;
+  font-size: 1.04rem;
+  line-height: 1.5;
+}
+
+.quest-message {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.quest-message--warning {
+  background: #fff1c2;
+  color: #7c4800;
+}
+
+.quest-message--success {
+  background: #dff7df;
+  color: #14652c;
+}
+
+.task-area {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 2px solid #e6eef5;
+}
+
+.task-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  color: #4b6172;
+  font-size: 0.9rem;
+}
+
+.task-heading span {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #ffe27a;
+  color: #533500;
+  font-weight: 900;
+}
+
+.task-heading strong {
+  color: #16723b;
+}
+
+.task-area h2 {
+  margin: 0 0 16px;
+  color: #17202a;
+  font-size: clamp(1.28rem, 3vw, 1.65rem);
+  line-height: 1.25;
+}
+
+.answer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.answer-option {
+  min-height: 58px;
+  padding: 12px 14px;
+  background: #e9f4ff;
+  color: #143352;
+  font-size: 1rem;
+  box-shadow: inset 0 0 0 2px #bfddf8;
+  transition: transform 0.16s, background 0.16s, box-shadow 0.16s;
+}
+
+.answer-option:hover {
+  transform: translateY(-2px);
+  background: #d9edff;
+}
+
+.answer-option--selected {
+  background: #ffe27a;
+  box-shadow: inset 0 0 0 3px #f0a700;
+}
+
+.order-list {
+  display: grid;
+  gap: 10px;
+}
+
+.order-item {
+  min-height: 58px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f4f8fb;
+  box-shadow: inset 0 0 0 2px #d9e6ef;
+  cursor: grab;
+}
+
+.order-item span {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #4d96ff;
+  color: white;
+  font-weight: 900;
+}
+
+.order-item strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.order-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.order-actions button {
+  width: 34px;
+  height: 34px;
+  background: #203746;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.38;
+}
+
+.order-hint {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 2px solid #ffd34f;
+  border-radius: 8px;
+  background: #fff8da;
+  color: #143352;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.72);
+}
+
+.order-hint span {
+  display: block;
+  margin-bottom: 8px;
+  color: #8a4b00;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.order-hint ol {
+  margin: 0;
+  padding-left: 22px;
+  line-height: 1.55;
+}
+
+.order-hint li {
+  font-weight: 800;
+}
+
+.task-feedback {
+  min-height: 24px;
+  margin: 14px 0 0;
+  color: #8a4b00;
+  font-weight: 900;
+}
+
+.task-submit {
+  min-height: 48px;
+  margin-top: 16px;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #ffd34f 0%, #ff952d 100%);
+  color: #143352;
+  font-size: 1rem;
+  box-shadow: 0 6px 0 #c76418;
+}
+
+.task-submit:disabled {
+  cursor: wait;
+  filter: grayscale(0.35);
+  opacity: 0.72;
+}
+
+.next-hint {
+  margin: 14px 0 0;
+  color: rgba(16, 60, 99, 0.72);
+  font-size: 0.92rem;
+}
+
+.clue-screen {
+  margin-top: 24px;
+  padding: clamp(18px, 4vw, 28px);
+  border: 2px solid #ffd34f;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 218, 0.98), rgba(255, 255, 255, 0.96));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+.clue-label {
+  width: fit-content;
+  margin: 0 0 12px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: #203746;
+  color: white;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.clue-screen h2 {
+  margin: 0;
+  color: #103c63;
+  font-size: clamp(1.7rem, 4vw, 2.45rem);
+  line-height: 1.05;
+}
+
+.clue-screen p:not(.clue-label) {
+  margin: 14px 0 0;
+  color: #31526b;
+  font-size: 1.04rem;
+  line-height: 1.55;
+}
+
+.clue-continue {
+  margin-top: 20px;
+}
+
+.location-guide {
+  position: fixed;
+  right: 18px;
+  bottom: 0;
+  z-index: 40;
+  width: min(330px, 38vw);
+  pointer-events: none;
+  animation: locationGuideRise 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.location-guide--talking {
+  z-index: 70;
+  width: min(405px, 50vw);
+}
+
+.location-guide--leaving {
+  animation: locationGuideDive 480ms ease-in both;
+}
+
+.location-guide__crop {
+  position: relative;
+  height: clamp(230px, 38vh, 410px);
+  overflow: hidden;
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.34));
+}
+
+.location-guide__image {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(360px, 112%);
+  max-width: none;
+  transform: translateX(-50%) translateY(8px);
+  transform-origin: center bottom;
+  animation: locationGuideFloat 3.4s ease-in-out infinite;
+  transition:
+    opacity 180ms ease,
+    filter 180ms ease;
+}
+
+.location-guide__image--active {
+  opacity: 0;
+}
+
+.location-guide:hover .location-guide__image--idle,
+.location-guide--talking .location-guide__image--idle {
+  opacity: 0;
+}
+
+.location-guide:hover .location-guide__image--active,
+.location-guide--talking .location-guide__image--active {
+  opacity: 1;
+  filter: saturate(1.08);
+}
+
+.location-guide--talking .location-guide__image {
+  width: min(430px, 116%);
+  animation:
+    locationGuideFloat 2.8s ease-in-out infinite,
+    locationGuideTalk 420ms ease-in-out infinite;
+}
+
+.location-guide__bubble {
+  position: absolute;
+  right: min(286px, 72%);
+  bottom: clamp(172px, 27vh, 294px);
+  width: min(420px, 54vw);
+  box-sizing: border-box;
+  padding: 30px 38px 26px;
+  border: 4px solid #111;
+  border-radius: 38px 46px 42px 44px / 34px 38px 42px 36px;
+  background: #fff;
+  color: #143352;
+  font-family: Arial, sans-serif;
+  box-shadow:
+    0 10px 0 rgba(17, 17, 17, 0.08),
+    0 22px 36px rgba(0, 0, 0, 0.22);
+  animation: locationGuideBubbleIn 320ms ease both;
+  overflow-wrap: anywhere;
+}
+
+.location-guide__bubble::before {
+  content: '';
+  position: absolute;
+  right: -82px;
+  bottom: 68px;
+  width: 28px;
+  height: 22px;
+  background: #fff;
+  border: 4px solid #111;
+  border-radius: 50%;
+}
+
+.location-guide__bubble::after {
+  content: '';
+  position: absolute;
+  right: -62px;
+  bottom: 78px;
+  width: 72px;
+  height: 42px;
+  background: #fff;
+  border-right: 4px solid #111;
+  border-bottom: 4px solid #111;
+  border-radius: 0 0 82% 0;
+  transform: rotate(-8deg);
+}
+
+.location-guide__bubble span {
+  max-width: 100%;
+  width: fit-content;
+  display: block;
+  margin-bottom: 8px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: #ffd93d;
+  color: #6f3b00;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.location-guide__bubble p {
+  margin: 0;
+  max-width: 100%;
+  color: #25445d;
+  font-size: clamp(0.98rem, 2vw, 1.1rem);
+  line-height: 1.42;
+  overflow-wrap: anywhere;
+}
+
+.location-guide__bubble ol {
+  margin: 10px 0 0;
+  padding-left: 22px;
+  max-width: 100%;
+  color: #143352;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.location-guide__bubble li {
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 680px) {
+  .location-page {
+    overflow: auto;
+  }
+
+  .location-shell {
+    min-height: 100vh;
+    justify-content: flex-start;
+    padding: 14px 0 24px;
+  }
+
+  .location-topbar {
+    position: relative;
+    top: auto;
+    flex-wrap: wrap;
+  }
+
+  .location-back,
+  .location-stats {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .quest-panel {
+    margin-top: 0;
+  }
+
+  .answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .task-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .order-item {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .order-actions {
+    grid-column: 2;
+  }
+
+  .location-guide {
+    right: -24px;
+    width: min(250px, 56vw);
+  }
+
+  .location-guide--talking {
+    width: min(295px, 66vw);
+  }
+
+  .location-guide__crop {
+    height: 225px;
+  }
+
+  .location-guide__bubble {
+    right: 142px;
+    bottom: 194px;
+    width: min(260px, calc(100vw - 92px));
+    padding: 24px 22px 22px;
+    border-width: 3px;
+    border-radius: 28px 34px 32px 30px / 26px 30px 32px 28px;
+  }
+
+  .location-guide__bubble::after {
+    right: -48px;
+    bottom: 50px;
+    width: 54px;
+    height: 32px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+  }
+
+  .location-guide__bubble::before {
+    right: -62px;
+    bottom: 43px;
+    width: 21px;
+    height: 17px;
+    border-width: 3px;
+  }
+
+  .location-guide__bubble p,
+  .location-guide__bubble ol {
+    font-size: 0.9rem;
+  }
+}
+
+@keyframes locationGuideRise {
+  from {
+    opacity: 0;
+    transform: translateY(112%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes locationGuideDive {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(112%);
+  }
+}
+
+@keyframes locationGuideFloat {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -10px;
+  }
+}
+
+@keyframes locationGuideTalk {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.018;
+  }
+}
+
+@keyframes locationGuideBubbleIn {
+  from {
+    opacity: 0;
+    transform: translate(-8px, 12px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+}

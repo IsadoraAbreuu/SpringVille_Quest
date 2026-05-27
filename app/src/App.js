@@ -1,22 +1,61 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import Home from './pages/homepage/homepage';
-import Location from './pages/location';
+import GameMenu from './components/game-menu';
+import MusicPlayer from './components/music-player';
+import Location from './pages/location/location';
 import Mapa from './pages/mapa/mapa';
 import Final from './pages/final';
 import Splashscreen from './pages/splashscreen/splashscreen';
 
 const QUEST_ORDER = ['parque', 'prefeitura', 'escola', 'casa', 'mercado'];
+const STORAGE_KEY = 'springville-quest-save';
+const VALID_PAGES = new Set(['home', 'location', 'mapa', 'final', ...QUEST_ORDER]);
+const VALID_CHARACTERS = new Set(['homer', 'marge', 'bart', 'lisa']);
+
+function getSavedGame() {
+  try {
+    const savedGame = window.localStorage.getItem(STORAGE_KEY);
+
+    if (!savedGame) {
+      return {};
+    }
+
+    const parsedGame = JSON.parse(savedGame);
+    const completedLocationIds = Array.isArray(parsedGame.completedLocationIds)
+      ? parsedGame.completedLocationIds.filter((locationId) => QUEST_ORDER.includes(locationId))
+      : [];
+
+    return {
+      currentPage: VALID_PAGES.has(parsedGame.currentPage) ? parsedGame.currentPage : 'home',
+      selectedCharacterId: VALID_CHARACTERS.has(parsedGame.selectedCharacterId) ? parsedGame.selectedCharacterId : 'homer',
+      completedLocationIds,
+      hasSeenMapIntro: Boolean(parsedGame.hasSeenMapIntro),
+      totalCoins: Number.isFinite(parsedGame.totalCoins) ? parsedGame.totalCoins : 0,
+    };
+  } catch {
+    return {};
+  }
+}
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
+  const [savedGame] = useState(getSavedGame);
+  const [currentPage, setCurrentPage] = useState(savedGame.currentPage || 'home');
   const [showSplash, setShowSplash] = useState(true);
   const [isSplashExiting, setIsSplashExiting] = useState(false);
+  const [splashReplayId, setSplashReplayId] = useState(0);
   const [logoReveal, setLogoReveal] = useState(0);
-  const [selectedCharacterId, setSelectedCharacterId] = useState('homer');
-  const [completedLocationIds, setCompletedLocationIds] = useState([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState(savedGame.selectedCharacterId || 'homer');
+  const [completedLocationIds, setCompletedLocationIds] = useState(savedGame.completedLocationIds || []);
+  const [recentColoredLocationId, setRecentColoredLocationId] = useState(null);
+  const [hasSeenMapIntro, setHasSeenMapIntro] = useState(savedGame.hasSeenMapIntro || false);
+  const [totalCoins, setTotalCoins] = useState(savedGame.totalCoins || 0);
 
   useEffect(() => {
+    if (!showSplash) {
+      return undefined;
+    }
+
     const loadingTimer = window.setTimeout(() => {
       setIsSplashExiting(true);
     }, 1650);
@@ -24,7 +63,19 @@ function App() {
     return () => {
       window.clearTimeout(loadingTimer);
     };
-  }, []);
+  }, [showSplash, splashReplayId]);
+
+  useEffect(() => {
+    const gameToSave = {
+      currentPage,
+      selectedCharacterId,
+      completedLocationIds,
+      hasSeenMapIntro,
+      totalCoins,
+    };
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(gameToSave));
+  }, [completedLocationIds, currentPage, hasSeenMapIntro, selectedCharacterId, totalCoins]);
 
   const handleSplashRevealProgress = (progress) => {
     setLogoReveal(progress);
@@ -42,7 +93,28 @@ function App() {
   const handleStartGame = (characterId) => {
     setSelectedCharacterId(characterId);
     setCompletedLocationIds([]);
+    setRecentColoredLocationId(null);
+    setHasSeenMapIntro(false);
+    setTotalCoins(0);
     setCurrentPage('mapa');
+  };
+
+  const handleRestartGame = () => {
+    window.localStorage.removeItem(STORAGE_KEY);
+    setCurrentPage('home');
+    setSelectedCharacterId('homer');
+    setCompletedLocationIds([]);
+    setRecentColoredLocationId(null);
+    setHasSeenMapIntro(false);
+    setTotalCoins(0);
+    setLogoReveal(0);
+    setIsSplashExiting(false);
+    setShowSplash(true);
+    setSplashReplayId((currentReplayId) => currentReplayId + 1);
+  };
+
+  const handleEarnCoins = (amount) => {
+    setTotalCoins((currentTotalCoins) => currentTotalCoins + amount);
   };
 
   const handleCompleteLocation = (locationId) => {
@@ -57,10 +129,21 @@ function App() {
         return currentCompletedLocationIds;
       }
 
-      return [...currentCompletedLocationIds, locationId];
-    });
+      const nextCompletedLocationIds = [...currentCompletedLocationIds, locationId];
 
-    setCurrentPage('mapa');
+      if (nextCompletedLocationIds.length === QUEST_ORDER.length) {
+        setCurrentPage('final');
+      } else {
+        setRecentColoredLocationId(locationId);
+        setCurrentPage('mapa');
+      }
+
+      return nextCompletedLocationIds;
+    });
+  };
+
+  const handleRevealAnimationComplete = () => {
+    setRecentColoredLocationId(null);
   };
 
   const renderPage = () => {
@@ -81,7 +164,14 @@ function App() {
         />
       );
       case 'location':
-        return <Location setCurrentPage={setCurrentPage} />;
+        return (
+          <Location
+            selectedCharacterId={selectedCharacterId}
+            totalCoins={totalCoins}
+            onEarnCoins={handleEarnCoins}
+            setCurrentPage={setCurrentPage}
+          />
+        );
       case 'escola':
       case 'mercado':
       case 'casa':
@@ -93,6 +183,9 @@ function App() {
             isCompleted={completedLocationIds.includes(currentPage)}
             isUnlocked={unlockedLocationIds.has(currentPage)}
             nextUnlockedLocationId={nextUnlockedLocationId}
+            selectedCharacterId={selectedCharacterId}
+            totalCoins={totalCoins}
+            onEarnCoins={handleEarnCoins}
             onCompleteLocation={handleCompleteLocation}
             setCurrentPage={setCurrentPage}
           />
@@ -102,11 +195,17 @@ function App() {
           <Mapa
             completedLocationIds={completedLocationIds}
             nextUnlockedLocationId={nextUnlockedLocationId}
+            revealLocationId={recentColoredLocationId}
+            selectedCharacterId={selectedCharacterId}
+            showMapIntro={!hasSeenMapIntro}
+            totalCoins={totalCoins}
+            onRevealAnimationComplete={handleRevealAnimationComplete}
+            onMapIntroComplete={() => setHasSeenMapIntro(true)}
             setCurrentPage={setCurrentPage}
           />
         );
       case 'final':
-        return <Final setCurrentPage={setCurrentPage} />;
+        return <Final totalCoins={totalCoins} onRestart={handleRestartGame} />;
       default:
       return (
         <Home
@@ -122,8 +221,17 @@ function App() {
   return (
     <div className="App">
       {renderPage()}
+      {!showSplash && (
+        <GameMenu
+          currentPage={currentPage}
+          onGoMap={() => setCurrentPage('mapa')}
+          onRestart={handleRestartGame}
+        />
+      )}
+      {!showSplash && <MusicPlayer />}
       {showSplash && (
         <Splashscreen
+          key={splashReplayId}
           isExiting={isSplashExiting}
           onRevealProgress={handleSplashRevealProgress}
           onExitComplete={handleSplashComplete}

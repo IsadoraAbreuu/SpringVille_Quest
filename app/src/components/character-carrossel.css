@@ -94,6 +94,15 @@
 	cursor: pointer;
 	transition: transform 220ms ease, background-color 220ms ease, box-shadow 220ms ease;
 	z-index: 4;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.character-carousel__nav svg {
+	width: 26px;
+	height: 26px;
+	stroke-width: 3;
 }
 
 .character-carousel__nav:hover {
@@ -280,6 +289,16 @@
 	box-shadow: 0 18px 30px rgba(255, 144, 46, 0.32);
 	cursor: pointer;
 	transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.character-carousel__play svg {
+	width: 18px;
+	height: 18px;
+	stroke-width: 3;
 }
 
 .character-carousel__play:hover {
