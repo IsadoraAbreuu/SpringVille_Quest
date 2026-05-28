@@ -107,26 +107,21 @@ export default function CharacterCarousel({
 		>
 			<div className="character-carousel__intro">
 				<p className="character-carousel__eyebrow">Escolha seu personagem</p>
-				<h2 className="character-carousel__title">Quem vai entrar em SpringVille?</h2>
-				<p className="character-carousel__copy">
-					Navegue pelo carrossel, veja cada personagem ganhar vida e comece a aventura com quem estiver no centro.
-				</p>
+				<h2 className="character-carousel__title">Quem vai salvar SpringVille?</h2>
+			</div>
+
+			<div className="character-carousel__footer">
+				<button
+					type="button"
+					className="character-carousel__play"
+					onClick={handlePlay}
+				>
+					<Play aria-hidden="true" />
+					Jogar com {activeCharacter.name}
+				</button>
 			</div>
 
 			<div className="character-carousel__stage">
-				<div className="character-carousel__footer">
-					<div className="character-carousel__summary">
-						<p className="character-carousel__selected-label">Personagem ativo</p>
-						<h3 className="character-carousel__selected-name">{activeCharacter.name}</h3>
-						<p className="character-carousel__description">{activeCharacter.description}</p>
-					</div>
-
-					<button type="button" className="character-carousel__play" onClick={handlePlay}>
-						<Play aria-hidden="true" />
-						Jogar com {activeCharacter.name}
-					</button>
-				</div>
-
 				<button
 					type="button"
 					className="character-carousel__nav character-carousel__nav--previous"

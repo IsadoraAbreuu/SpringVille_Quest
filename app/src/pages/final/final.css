@@ -15,7 +15,7 @@
   inset: 0;
   background-image:
     linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 217, 61, 0.18)),
-    url('../assets/images/fundo-springville.png');
+    url('../../assets/images/fundo-springville.png');
   background-size: cover;
   background-position: center bottom;
   transform: scale(1.06);
@@ -23,7 +23,8 @@
 }
 
 .final-confetti,
-.final-donuts {
+.final-donuts,
+.final-characters {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -69,18 +70,56 @@
   animation-delay: calc(var(--donut-index) * -0.42s);
 }
 
+.final-characters {
+  z-index: 4;
+}
+
+.final-characters img {
+  position: absolute;
+  bottom: clamp(4px, 2vh, 18px);
+  left: calc(10% + (var(--character-index) * 26%));
+  width: clamp(92px, 13vw, 180px);
+  max-height: 32vh;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 18px 18px rgba(0, 0, 0, 0.28));
+  transform-origin: center bottom;
+  animation: finalCharacterJump 1.15s ease-in-out infinite;
+  animation-delay: calc(var(--character-index) * -0.18s);
+}
+
+.final-characters img:nth-child(2) {
+  left: 31%;
+  width: clamp(110px, 15vw, 210px);
+  animation-duration: 1.28s;
+}
+
+.final-characters img:nth-child(3) {
+  left: 57%;
+  animation-duration: 1.05s;
+}
+
+.final-characters img:nth-child(4) {
+  left: 78%;
+  width: clamp(100px, 14vw, 190px);
+  animation-duration: 1.36s;
+}
+
 .final-card {
   position: relative;
   z-index: 2;
-  width: min(820px, 100%);
-  padding: clamp(26px, 5vw, 46px);
-  border: 5px solid #111;
-  border-radius: 42px 48px 44px 46px / 38px 42px 44px 40px;
-  background: rgba(255, 255, 255, 0.96);
+  width: min(760px, 100%);
+  padding: clamp(22px, 4vw, 34px);
+  border: 3px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.22)),
+    rgba(255, 255, 255, 0.18);
   text-align: center;
   box-shadow:
-    0 12px 0 rgba(17, 17, 17, 0.12),
-    0 28px 64px rgba(0, 0, 0, 0.32);
+    0 28px 64px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px) saturate(1.12);
   animation: finalCardPop 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -99,8 +138,7 @@
 }
 
 .final-kicker svg,
-.final-restart svg,
-.final-highlights svg {
+.final-restart svg {
   width: 20px;
   height: 20px;
   stroke-width: 3;
@@ -109,7 +147,7 @@
 .final-card h1 {
   margin: 0;
   color: #103c63;
-  font-size: clamp(2.35rem, 7vw, 5rem);
+  font-size: clamp(2rem, 5vw, 3.8rem);
   line-height: 0.95;
   text-shadow: 0 4px 0 rgba(255, 217, 61, 0.45);
 }
@@ -117,12 +155,12 @@
 .final-wallet {
   width: fit-content;
   max-width: 100%;
-  margin: 26px auto 22px;
+  margin: 18px auto 16px;
   display: inline-flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 22px;
-  border: 4px solid white;
+  gap: 12px;
+  padding: 10px 16px;
+  border: 3px solid white;
   border-radius: 8px;
   background: linear-gradient(180deg, #ffd93d 0%, #ffb800 100%);
   color: #6f3b00;
@@ -133,73 +171,63 @@
 }
 
 .final-wallet__icon {
-  width: 50px;
-  height: 50px;
+  width: 38px;
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
   border-radius: 50%;
   background: #fff8c7;
-  box-shadow: inset 0 0 0 4px #e7a300;
+  box-shadow: inset 0 0 0 3px #e7a300;
 }
 
 .final-wallet__icon svg {
-  width: 27px;
-  height: 27px;
+  width: 21px;
+  height: 21px;
   stroke-width: 3;
+}
+
+.final-wallet__icon .final-asset-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.final-asset-icon {
+  display: inline-block;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.final-asset-icon--coin {
+  background-image: url('../../assets/images/moeda.svg');
 }
 
 .final-wallet strong {
   display: block;
-  font-size: clamp(2.4rem, 8vw, 4.5rem);
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
   line-height: 0.9;
 }
 
 .final-wallet span {
   display: block;
   margin-top: 4px;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 900;
 }
 
 .final-story {
-  max-width: 660px;
+  max-width: 560px;
   margin: 0 auto;
   color: #31526b;
-  font-size: clamp(1.05rem, 2vw, 1.22rem);
-  line-height: 1.65;
-}
-
-.final-highlights {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 28px 0;
-}
-
-.final-highlights div {
-  min-height: 94px;
-  display: grid;
-  place-items: center;
-  gap: 8px;
-  padding: 14px;
-  border: 3px solid #d9e6ef;
-  border-radius: 8px;
-  background: #f4f8fb;
-  color: #143352;
-  font-weight: 900;
-  box-shadow: inset 0 0 0 2px white;
-}
-
-.final-highlights img {
-  width: 28px;
-  height: 28px;
-  animation: finalTinySpin 2.8s linear infinite;
+  font-size: clamp(0.94rem, 1.6vw, 1.06rem);
+  line-height: 1.48;
 }
 
 .final-restart {
   min-height: 58px;
+  margin-top: 24px;
   border: 3px solid rgba(255, 255, 255, 0.9);
   border-radius: 8px;
   padding: 0 28px;
@@ -241,15 +269,33 @@
 
   .final-card {
     padding: 24px 18px;
-  }
-
-  .final-highlights {
-    grid-template-columns: 1fr;
+    margin-bottom: 112px;
   }
 
   .final-wallet {
     gap: 12px;
     padding: 12px 14px;
+  }
+
+  .final-characters img {
+    width: clamp(68px, 23vw, 110px);
+    max-height: 20vh;
+  }
+
+  .final-characters img:nth-child(1) {
+    left: 0;
+  }
+
+  .final-characters img:nth-child(2) {
+    left: 25%;
+  }
+
+  .final-characters img:nth-child(3) {
+    left: 52%;
+  }
+
+  .final-characters img:nth-child(4) {
+    left: 76%;
   }
 }
 
@@ -297,6 +343,25 @@
   }
 }
 
+@keyframes finalCharacterJump {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg) scaleY(1);
+  }
+
+  18% {
+    transform: translateY(5px) rotate(0deg) scaleY(0.96);
+  }
+
+  48% {
+    transform: translateY(-42px) rotate(2deg) scaleY(1.03);
+  }
+
+  72% {
+    transform: translateY(0) rotate(-1deg) scaleY(1);
+  }
+}
+
 @keyframes finalCardPop {
   from {
     opacity: 0;
@@ -317,11 +382,5 @@
 
   50% {
     transform: translateY(-7px) rotate(1deg);
-  }
-}
-
-@keyframes finalTinySpin {
-  to {
-    rotate: 360deg;
   }
 }

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import {
   Check,
+  Coins,
   Lock,
   MapPinned,
   Minus,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import mapaColorido from "../../assets/images/mapa/mapa.svg";
 import mapaGray from "../../assets/images/mapa/mapa-gray.svg";
+import rosquinha from "../../assets/images/rosquinha.svg";
 import casaStage from "../../assets/images/mapa/casa.svg";
 import escolaStage from "../../assets/images/mapa/escola.svg";
 import parqueStage from "../../assets/images/mapa/parque.svg";
@@ -114,6 +116,7 @@ export default function Mapa({
   totalCoins = 0,
   onRevealAnimationComplete,
   onMapIntroComplete,
+  onBuyDonuts,
   setCurrentPage,
 }) {
   const viewportRef = useRef(null);
@@ -124,6 +127,7 @@ export default function Mapa({
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [selectedInventoryId, setSelectedInventoryId] = useState(nextUnlockedLocationId || QUEST_ORDER[0]);
   const [enteringLocationId, setEnteringLocationId] = useState(null);
+  const [isDonutTransitioning, setIsDonutTransitioning] = useState(false);
   const [activeRevealId, setActiveRevealId] = useState(null);
   const [mapIntroStepIndex, setMapIntroStepIndex] = useState(0);
   const [dragConstraints, setDragConstraints] = useState({
@@ -218,6 +222,7 @@ export default function Mapa({
   const guideCharacter = GUIDE_CHARACTERS[selectedCharacterId] || GUIDE_CHARACTERS.homer;
   const currentIntroText = MAP_INTRO_STEPS[mapIntroStepIndex];
   const isLastMapIntroStep = mapIntroStepIndex === MAP_INTRO_STEPS.length - 1;
+  const shouldShowFinalCallToAction = hasCompletedQuest && !activeRevealId && !showMapIntro && !enteringLocationId && !isDonutTransitioning;
 
   useEffect(() => {
     if (showMapIntro) {
@@ -255,6 +260,17 @@ export default function Mapa({
     }
 
     setMapIntroStepIndex((currentIndex) => currentIndex + 1);
+  };
+
+  const startDonutFinalTransition = () => {
+    if (isDonutTransitioning) {
+      return;
+    }
+
+    setIsDonutTransitioning(true);
+    window.setTimeout(() => {
+      onBuyDonuts?.();
+    }, 1180);
   };
 
   return (
@@ -483,8 +499,13 @@ export default function Mapa({
                 <p>{selectedLocationInfo.description}</p>
                 <p>{selectedLocationInfo.info}</p>
                 <div className="map-detail-reward">
-                  <span>Recompensa</span>
-                  <strong>{selectedLocationInfo.reward} moedas</strong>
+                  <span className="map-detail-reward-label">Recompensa</span>
+                  <strong>
+                    <span className="map-detail-reward-icon">
+                      <Coins aria-hidden="true" />
+                    </span>
+                    {selectedLocationInfo.reward} moedas
+                  </strong>
                 </div>
                 <button
                   type="button"
@@ -515,6 +536,27 @@ export default function Mapa({
         <div className="map-color-reveal-banner" aria-live="polite">
           <span>Area restaurada</span>
           <strong>{LOCATION_INFO[activeRevealId].title} voltou a ter cor!</strong>
+        </div>
+      )}
+
+      {shouldShowFinalCallToAction && (
+        <div className="map-final-cta" aria-live="polite">
+          <span>Cidade toda colorida</span>
+          <strong>SpringVille esta pronta para comemorar!</strong>
+          <button type="button" onClick={startDonutFinalTransition}>
+            <img src={rosquinha} alt="" />
+            Comprar rosquinhas para a cidade toda
+          </button>
+        </div>
+      )}
+
+      {isDonutTransitioning && (
+        <div className="map-donut-transition" aria-live="polite">
+          <div className="map-donut-transition__flash" />
+          <div className="map-donut-transition__card">
+            <img src={rosquinha} alt="" />
+            <span>Comprando rosquinhas...</span>
+          </div>
         </div>
       )}
 

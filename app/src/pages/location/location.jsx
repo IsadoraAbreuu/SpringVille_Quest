@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowLeft, ArrowUp } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Building2, Coins, GraduationCap, Home, ShoppingBasket, Trees } from 'lucide-react';
 import springvilleFallback from '../../assets/images/fundo-springville.png';
 import casaBackground from '../../assets/images/locais/casa.jpg';
 import escolaBackground from '../../assets/images/locais/escola.jpg';
@@ -31,7 +31,7 @@ const QUESTS = {
       },
       {
         type: 'order',
-        prompt: 'Organize a cena do piquenique no parque.',
+        prompt: 'Arraste e organize a cena do piquenique no parque.',
         options: ['Escolher uma mesa', 'Abrir a cesta', 'Dividir os lanches', 'Limpar o local'],
         answer: ['Escolher uma mesa', 'Abrir a cesta', 'Dividir os lanches', 'Limpar o local'],
       },
@@ -51,7 +51,7 @@ const QUESTS = {
       },
       {
         type: 'order',
-        prompt: 'Coloque os documentos da prefeitura na ordem certa.',
+        prompt: 'Arraste e organize os documentos da prefeitura na ordem certa.',
         options: ['Receber pedido', 'Carimbar formulario', 'Arquivar registro', 'Liberar aprovacao'],
         answer: ['Receber pedido', 'Carimbar formulario', 'Arquivar registro', 'Liberar aprovacao'],
       },
@@ -71,7 +71,7 @@ const QUESTS = {
       },
       {
         type: 'order',
-        prompt: 'Arrume a rotina antes da aula comecar.',
+        prompt: 'Arraste e organize a rotina antes da aula comecar.',
         options: ['Pegar o material', 'Entrar na sala', 'Responder chamada', 'Comecar a atividade'],
         answer: ['Pegar o material', 'Entrar na sala', 'Responder chamada', 'Comecar a atividade'],
       },
@@ -91,7 +91,7 @@ const QUESTS = {
       },
       {
         type: 'order',
-        prompt: 'Organize a sala para a familia assistir TV.',
+        prompt: 'Arraste e organize a sala para a familia assistir TV.',
         options: ['Guardar brinquedos', 'Arrumar o sofa', 'Preparar petiscos', 'Ligar a TV'],
         answer: ['Guardar brinquedos', 'Arrumar o sofa', 'Preparar petiscos', 'Ligar a TV'],
       },
@@ -111,7 +111,7 @@ const QUESTS = {
       },
       {
         type: 'order',
-        prompt: 'Organize a compra final no mercado.',
+        prompt: 'Arraste e organize a compra final no mercado.',
         options: ['Pegar carrinho', 'Escolher produtos', 'Passar no caixa', 'Guardar recibo'],
         answer: ['Pegar carrinho', 'Escolher produtos', 'Passar no caixa', 'Guardar recibo'],
       },
@@ -154,6 +154,15 @@ const GUIDE_CHARACTERS = {
   marge: { name: 'Marge', image: margeGuide, activeImage: margeGuideActive },
 };
 
+const LOCATION_BADGES = {
+  parque: { label: 'Parque', Icon: Trees },
+  prefeitura: { label: 'Prefeitura', Icon: Building2 },
+  escola: { label: 'Escola', Icon: GraduationCap },
+  casa: { label: 'Casa', Icon: Home },
+  mercado: { label: 'Mercado', Icon: ShoppingBasket },
+  location: { label: 'Local', Icon: Trees },
+};
+
 const SUCCESS_MESSAGES = {
   bart: 'Boa! Essa foi esperta. SpringVille acabou de ganhar mais uma dose de atitude.',
   homer: 'Woo-hoo! Mandou bem demais. Essas moedas ja estao quase fazendo barulho no bolso.',
@@ -163,10 +172,17 @@ const SUCCESS_MESSAGES = {
 
 function shuffleItems(items) {
   if (items.length < 2) {
-    return items;
+    return [...items];
   }
 
-  return [...items].reverse();
+  const shuffledItems = [...items];
+
+  for (let index = shuffledItems.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledItems[index], shuffledItems[randomIndex]] = [shuffledItems[randomIndex], shuffledItems[index]];
+  }
+
+  return arraysMatch(shuffledItems, items) ? shuffleItems(items) : shuffledItems;
 }
 
 function arraysMatch(first, second) {
@@ -186,10 +202,10 @@ export default function Location({
   const quest = QUESTS[locationId] || QUESTS.location;
   const [taskIndex, setTaskIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState('');
+  const [quizOptions, setQuizOptions] = useState([]);
   const [orderedItems, setOrderedItems] = useState([]);
   const [draggedItem, setDraggedItem] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [coins, setCoins] = useState(0);
   const [showClue, setShowClue] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [orderMistakes, setOrderMistakes] = useState(0);
@@ -201,14 +217,16 @@ export default function Location({
   const nextClue = NEXT_LOCATION_CLUES[locationId];
   const guideCharacter = GUIDE_CHARACTERS[selectedCharacterId] || GUIDE_CHARACTERS.homer;
   const guideSuccessMessage = SUCCESS_MESSAGES[selectedCharacterId] || SUCCESS_MESSAGES.homer;
+  const locationBadge = LOCATION_BADGES[locationId] || LOCATION_BADGES.location;
+  const LocationIcon = locationBadge.Icon;
   const shouldShowOrderHint = currentTask?.type === 'order' && orderMistakes >= 5;
   const shouldShowGuideBubble = Boolean(guideMessage) || shouldShowOrderHint;
 
   useEffect(() => {
     setTaskIndex(0);
     setSelectedOption('');
+    setQuizOptions([]);
     setFeedback('');
-    setCoins(0);
     setDraggedItem('');
     setShowClue(false);
     setIsAdvancing(false);
@@ -218,9 +236,14 @@ export default function Location({
   }, [locationId]);
 
   useEffect(() => {
-    if (currentTask?.type === 'order') {
+    if (currentTask?.type === 'quiz') {
+      setQuizOptions(shuffleItems(currentTask.options));
+      setOrderedItems([]);
+    } else if (currentTask?.type === 'order') {
       setOrderedItems(shuffleItems(currentTask.options));
+      setQuizOptions([]);
     } else {
+      setQuizOptions([]);
       setOrderedItems([]);
     }
 
@@ -236,14 +259,6 @@ export default function Location({
     setIsGuideLeaving(true);
     window.setTimeout(callback, 480);
   };
-
-  const progressLabel = useMemo(() => {
-    if (!quest.tasks.length) {
-      return '0 / 0';
-    }
-
-    return `${Math.min(taskIndex + 1, quest.tasks.length)} / ${quest.tasks.length}`;
-  }, [quest.tasks.length, taskIndex]);
 
   const moveOrderedItem = (fromIndex, toIndex) => {
     setOrderedItems((items) => {
@@ -268,7 +283,6 @@ export default function Location({
   const completeTask = () => {
     setIsAdvancing(true);
     setGuideMessage(guideSuccessMessage);
-    setCoins((currentCoins) => currentCoins + quest.reward);
     onEarnCoins?.(quest.reward);
 
     if (isLastTask) {
@@ -340,16 +354,16 @@ export default function Location({
             Voltar ao mapa
           </button>
 
-          <div className="location-stats" aria-label="Progresso da task">
-            <span>{progressLabel}</span>
-            <strong>{totalCoins} moedas</strong>
-            <small>+{coins} neste local</small>
+          <div className="location-stats" aria-label="Moedas acumuladas">
+            <span>Moedas</span>
+            <strong>{totalCoins}</strong>
           </div>
         </header>
 
         <section className="quest-panel">
           <p className="quest-kicker">
-            {isCompleted ? 'Area restaurada' : isUnlocked ? 'Task liberada' : 'Task bloqueada'}
+            <LocationIcon aria-hidden="true" />
+            {quest.tasks.length ? `${Math.min(taskIndex + 1, quest.tasks.length)} de ${quest.tasks.length} do ${locationBadge.label}` : locationBadge.label}
           </p>
           <h1>{quest.title}</h1>
           <p className="quest-subtitle">{quest.subtitle}</p>
@@ -382,14 +396,17 @@ export default function Location({
             <div className="task-area">
               <div className="task-heading">
                 <span>{currentTask.type === 'quiz' ? 'Quiz' : 'Drag and drop'}</span>
-                <strong>Recompensa: {quest.reward} moedas</strong>
+                <strong>
+                  <Coins aria-hidden="true" />
+                  +{quest.reward} moedas
+                </strong>
               </div>
 
               <h2>{currentTask.prompt}</h2>
 
               {currentTask.type === 'quiz' ? (
                 <div className="answer-grid">
-                  {currentTask.options.map((option) => (
+                  {quizOptions.map((option, index) => (
                     <button
                       key={option}
                       className={`answer-option${selectedOption === option ? ' answer-option--selected' : ''}`}
@@ -398,6 +415,7 @@ export default function Location({
                         setFeedback('');
                       }}
                     >
+                      <span>{String.fromCharCode(65 + index)}</span>
                       {option}
                     </button>
                   ))}
@@ -415,22 +433,6 @@ export default function Location({
                     >
                       <span>{index + 1}</span>
                       <strong>{item}</strong>
-                      <div className="order-actions">
-                        <button
-                          onClick={() => moveOrderedItem(index, Math.max(0, index - 1))}
-                          disabled={index === 0}
-                          aria-label={`Mover ${item} para cima`}
-                        >
-                          <ArrowUp aria-hidden="true" />
-                        </button>
-                        <button
-                          onClick={() => moveOrderedItem(index, Math.min(orderedItems.length - 1, index + 1))}
-                          disabled={index === orderedItems.length - 1}
-                          aria-label={`Mover ${item} para baixo`}
-                        >
-                          <ArrowDown aria-hidden="true" />
-                        </button>
-                      </div>
                     </div>
                   ))}
                 </div>

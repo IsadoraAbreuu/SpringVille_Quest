@@ -5,7 +5,7 @@ import GameMenu from './components/game-menu';
 import MusicPlayer from './components/music-player';
 import Location from './pages/location/location';
 import Mapa from './pages/mapa/mapa';
-import Final from './pages/final';
+import Final from './pages/final/final';
 import Splashscreen from './pages/splashscreen/splashscreen';
 
 const QUEST_ORDER = ['parque', 'prefeitura', 'escola', 'casa', 'mercado'];
@@ -131,12 +131,8 @@ function App() {
 
       const nextCompletedLocationIds = [...currentCompletedLocationIds, locationId];
 
-      if (nextCompletedLocationIds.length === QUEST_ORDER.length) {
-        setCurrentPage('final');
-      } else {
-        setRecentColoredLocationId(locationId);
-        setCurrentPage('mapa');
-      }
+      setRecentColoredLocationId(locationId);
+      setCurrentPage('mapa');
 
       return nextCompletedLocationIds;
     });
@@ -201,6 +197,7 @@ function App() {
             totalCoins={totalCoins}
             onRevealAnimationComplete={handleRevealAnimationComplete}
             onMapIntroComplete={() => setHasSeenMapIntro(true)}
+            onBuyDonuts={() => setCurrentPage('final')}
             setCurrentPage={setCurrentPage}
           />
         );

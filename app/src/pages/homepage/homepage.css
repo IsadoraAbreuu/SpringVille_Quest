@@ -6,7 +6,7 @@
 	display: flex;
 	align-items: flex-start;
 	justify-content: center;
-	padding: 24px 24px 40px;
+	padding: 18px 24px 28px;
 	background: #d7ecff;
 }
 
@@ -28,13 +28,23 @@
 .homepage--scene-bottom .homepage__background {
 	background-position: 50% 100%;
 	transform: scale(1.04);
+	filter: blur(5px) saturate(0.94) brightness(0.96);
 }
 
 .homepage__overlay {
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.08) 42%, rgba(255,255,255,0.02) 100%);
-	opacity: 0.14;
+	background:
+		radial-gradient(circle at 50% 13%, rgba(255, 217, 61, 0.26), transparent 32%),
+		linear-gradient(180deg, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.08) 42%, rgba(15, 48, 78, 0.12) 100%);
+	opacity: 0.42;
+}
+
+.homepage--scene-bottom .homepage__overlay {
+	background:
+		radial-gradient(circle at 50% 22%, rgba(255, 217, 61, 0.32), transparent 32%),
+		linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(20, 50, 70, 0.16) 54%, rgba(15, 48, 78, 0.24) 100%);
+	opacity: 0.72;
 }
 
 .homepage__content {
@@ -43,16 +53,16 @@
 	width: min(1180px, 100%);
 	display: grid;
 	grid-template-rows: auto auto 1fr;
-	gap: 22px;
+	gap: 12px;
 	align-content: stretch;
-	min-height: calc(100vh - 64px);
+	min-height: calc(100vh - 46px);
 }
 
 .homepage__header {
 	width: 100%;
 	display: flex;
 	justify-content: center;
-	padding-top: 8px;
+	padding-top: 4px;
 	transition: padding 420ms ease;
 }
 
@@ -61,7 +71,7 @@
 }
 
 .homepage__logo {
-	width: min(420px, 78vw);
+	width: min(430px, 72vw);
 	height: auto;
 	display: block;
 	opacity: 0;
@@ -75,17 +85,28 @@
 }
 
 .homepage__logo--compact {
-	width: min(250px, 54vw);
+	width: min(238px, 44vw);
+}
+
+.homepage--scene-bottom .homepage__content::before {
+	display: none;
+}
+
+.homepage--scene-bottom .homepage__header,
+.homepage--scene-bottom .character-carousel__intro,
+.homepage--scene-bottom .character-carousel__footer {
+	position: relative;
+	z-index: 2;
 }
 
 @media (max-width: 640px) {
 	.homepage {
-		padding: 18px 16px 28px;
+		padding: 14px 14px 20px;
 	}
 
 	.homepage__content {
-		gap: 16px;
-		min-height: calc(100vh - 46px);
+		gap: 8px;
+		min-height: calc(100vh - 34px);
 	}
 
 	.homepage__background {
@@ -99,13 +120,19 @@
 	.homepage--scene-bottom .homepage__background {
 		background-position: 52% 86%;
 		transform: scale(1.05);
+		filter: blur(4px) saturate(0.96) brightness(0.98);
 	}
 
 	.homepage__logo {
-		width: min(320px, 82vw);
+		width: min(280px, 76vw);
 	}
 
 	.homepage__logo--compact {
-		width: min(210px, 56vw);
+		width: min(176px, 48vw);
+	}
+
+	.homepage--scene-bottom .homepage__content::before {
+		width: 100%;
+		height: 236px;
 	}
 }
