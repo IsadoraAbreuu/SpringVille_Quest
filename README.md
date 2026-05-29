@@ -1,4 +1,4 @@
-# 🌆 SpringVille Quest
+# 🍩 SpringVille Quest
 
 SpringVille Quest é um jogo educativo e interativo inspirado em cidades animadas, onde o jogador tem a missão de restaurar os principais pontos da cidade completando desafios, quizzes e atividades lúdicas.
 
