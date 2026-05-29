@@ -93,9 +93,3 @@ http://localhost:3000
 **Isadora Abreu**
 
 Projeto desenvolvido para fins educacionais e de aprendizado em desenvolvimento front-end utilizando React.
-
----
-
-## 📜 Licença
-
-Este projeto foi desenvolvido para fins acadêmicos e educacionais.
