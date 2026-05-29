@@ -1,6 +1,5 @@
 import './game-intro.css';
 import { useState } from 'react';
-import bartSupported from '../assets/images/bart-apoiado.svg';
 
 const INTRO_STEPS = [
 	{
@@ -44,7 +43,7 @@ export default function GameIntro({ isVisible, onFinish }) {
 	return (
 		<section className={`game-intro${isVisible ? ' game-intro--visible' : ''}`} aria-label="Introducao do jogo">
 			{/* Bart agora está do lado direito, surgindo */}
-			<div className="game-intro__balloon game-intro__balloon--right">
+			<div className="game-intro__panel">
 				<p className="game-intro__accent">{currentStep.accent}</p>
 				<h2 className="game-intro__title">{currentStep.title}</h2>
 				<p className="game-intro__text">{currentStep.text}</p>
@@ -80,13 +79,6 @@ export default function GameIntro({ isVisible, onFinish }) {
 						)}
 					</div>
 				</div>
-			</div>
-			<div className="game-intro__character game-intro__character--right" aria-hidden="true">
-				<img
-					src={bartSupported}
-					alt="Bart apoiado, olhando para a tela"
-					className="game-intro__bart game-intro__bart--visible"
-				/>
 			</div>
 		</section>
 	);

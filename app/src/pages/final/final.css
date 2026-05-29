@@ -23,7 +23,6 @@
 }
 
 .final-confetti,
-.final-donuts,
 .final-characters {
   position: absolute;
   inset: 0;
@@ -55,19 +54,6 @@
   color: #9a5b00;
   font-size: 17px;
   font-weight: 900;
-}
-
-.final-donuts img {
-  position: absolute;
-  width: clamp(52px, 7vw, 98px);
-  left: calc((var(--donut-index) * 13%) - 6%);
-  bottom: var(--donut-bottom);
-  opacity: 0.9;
-  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.24));
-  animation:
-    finalDonutFloat calc(3.6s + (var(--donut-index) * 0.22s)) ease-in-out infinite,
-    finalDonutSpin calc(7s + (var(--donut-index) * 0.3s)) linear infinite;
-  animation-delay: calc(var(--donut-index) * -0.42s);
 }
 
 .final-characters {
@@ -323,23 +309,6 @@
   100% {
     transform: translateY(calc(100vh + 80px)) rotateY(720deg) rotate(180deg);
     opacity: 0;
-  }
-}
-
-@keyframes finalDonutFloat {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-
-  50% {
-    translate: 0 -18px;
-  }
-}
-
-@keyframes finalDonutSpin {
-  to {
-    rotate: 360deg;
   }
 }
 

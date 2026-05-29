@@ -5,13 +5,15 @@ import './music-player.css';
 const VIDEO_ID = '0KHEOZnMtTI';
 const DEFAULT_VOLUME = 45;
 const VOLUME_STEP = 10;
+const LOCATION_PAGES = new Set(['location', 'parque', 'prefeitura', 'escola', 'casa', 'mercado']);
 
-export default function MusicPlayer() {
+export default function MusicPlayer({ currentPage = '' }) {
   const playerRef = useRef(null);
   const playerElementId = useRef(`springville-music-${Date.now()}`);
   const [isReady, setIsReady] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
+  const isLocationPage = LOCATION_PAGES.has(currentPage);
 
   useEffect(() => {
     const createPlayer = () => {
@@ -101,7 +103,7 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className="music-player"
+      className={`music-player${isLocationPage ? ' music-player--location' : ''}`}
       aria-label="Controles da musica"
     >
       <div className="music-frame" id={playerElementId.current} />

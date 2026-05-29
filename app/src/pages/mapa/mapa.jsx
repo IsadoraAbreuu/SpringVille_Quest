@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import mapaColorido from "../../assets/images/mapa/mapa.svg";
 import mapaGray from "../../assets/images/mapa/mapa-gray.svg";
-import rosquinha from "../../assets/images/rosquinha.svg";
 import casaStage from "../../assets/images/mapa/casa.svg";
 import escolaStage from "../../assets/images/mapa/escola.svg";
 import parqueStage from "../../assets/images/mapa/parque.svg";
@@ -127,7 +126,7 @@ export default function Mapa({
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [selectedInventoryId, setSelectedInventoryId] = useState(nextUnlockedLocationId || QUEST_ORDER[0]);
   const [enteringLocationId, setEnteringLocationId] = useState(null);
-  const [isDonutTransitioning, setIsDonutTransitioning] = useState(false);
+  const [isPrizeTransitioning, setIsPrizeTransitioning] = useState(false);
   const [activeRevealId, setActiveRevealId] = useState(null);
   const [mapIntroStepIndex, setMapIntroStepIndex] = useState(0);
   const [dragConstraints, setDragConstraints] = useState({
@@ -222,7 +221,7 @@ export default function Mapa({
   const guideCharacter = GUIDE_CHARACTERS[selectedCharacterId] || GUIDE_CHARACTERS.homer;
   const currentIntroText = MAP_INTRO_STEPS[mapIntroStepIndex];
   const isLastMapIntroStep = mapIntroStepIndex === MAP_INTRO_STEPS.length - 1;
-  const shouldShowFinalCallToAction = hasCompletedQuest && !activeRevealId && !showMapIntro && !enteringLocationId && !isDonutTransitioning;
+  const shouldShowFinalCallToAction = hasCompletedQuest && !activeRevealId && !showMapIntro && !enteringLocationId && !isPrizeTransitioning;
 
   useEffect(() => {
     if (showMapIntro) {
@@ -262,12 +261,12 @@ export default function Mapa({
     setMapIntroStepIndex((currentIndex) => currentIndex + 1);
   };
 
-  const startDonutFinalTransition = () => {
-    if (isDonutTransitioning) {
+  const startPrizeFinalTransition = () => {
+    if (isPrizeTransitioning) {
       return;
     }
 
-    setIsDonutTransitioning(true);
+    setIsPrizeTransitioning(true);
     window.setTimeout(() => {
       onBuyDonuts?.();
     }, 1180);
@@ -542,20 +541,20 @@ export default function Mapa({
       {shouldShowFinalCallToAction && (
         <div className="map-final-cta" aria-live="polite">
           <span>Cidade toda colorida</span>
-          <strong>SpringVille esta pronta para comemorar!</strong>
-          <button type="button" onClick={startDonutFinalTransition}>
-            <img src={rosquinha} alt="" />
-            Comprar rosquinhas para a cidade toda
+          <strong>Voce salvou SpringVille!</strong>
+          <p>Agora todos na cidade sabem que voce e o heroi que trouxe as cores de volta.</p>
+          <button type="button" onClick={startPrizeFinalTransition}>
+            <span className="map-prize-coin" aria-hidden="true" />
+            Receber premio
           </button>
         </div>
       )}
 
-      {isDonutTransitioning && (
-        <div className="map-donut-transition" aria-live="polite">
-          <div className="map-donut-transition__flash" />
-          <div className="map-donut-transition__card">
-            <img src={rosquinha} alt="" />
-            <span>Comprando rosquinhas...</span>
+      {isPrizeTransitioning && (
+        <div className="map-prize-transition" aria-live="polite">
+          <div className="map-prize-transition__flash" />
+          <div className="map-prize-transition__card">
+            <span className="map-prize-transition__coin" aria-hidden="true" />
           </div>
         </div>
       )}

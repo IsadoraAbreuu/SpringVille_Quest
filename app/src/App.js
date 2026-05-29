@@ -117,6 +117,10 @@ function App() {
     setTotalCoins((currentTotalCoins) => currentTotalCoins + amount);
   };
 
+  const handleSpendCoins = (amount) => {
+    setTotalCoins((currentTotalCoins) => Math.max(0, currentTotalCoins - amount));
+  };
+
   const handleCompleteLocation = (locationId) => {
     setCompletedLocationIds((currentCompletedLocationIds) => {
       if (currentCompletedLocationIds.includes(locationId)) {
@@ -165,6 +169,7 @@ function App() {
             selectedCharacterId={selectedCharacterId}
             totalCoins={totalCoins}
             onEarnCoins={handleEarnCoins}
+            onSpendCoins={handleSpendCoins}
             setCurrentPage={setCurrentPage}
           />
         );
@@ -182,6 +187,7 @@ function App() {
             selectedCharacterId={selectedCharacterId}
             totalCoins={totalCoins}
             onEarnCoins={handleEarnCoins}
+            onSpendCoins={handleSpendCoins}
             onCompleteLocation={handleCompleteLocation}
             setCurrentPage={setCurrentPage}
           />
@@ -225,7 +231,7 @@ function App() {
           onRestart={handleRestartGame}
         />
       )}
-      {!showSplash && <MusicPlayer />}
+      {!showSplash && <MusicPlayer currentPage={currentPage} />}
       {showSplash && (
         <Splashscreen
           key={splashReplayId}

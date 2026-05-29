@@ -180,28 +180,95 @@
     left: 14px;
     right: auto;
     top: 136px;
-    grid-template-columns: 50px minmax(190px, calc(100vw - 92px));
+    grid-template-columns: 44px minmax(132px, 176px);
+    gap: 7px;
   }
 
   .music-btn {
-    width: 50px;
-    height: 50px;
-    font-size: 22px;
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
+    font-size: 20px;
+    box-shadow:
+      0 4px 0 #d87a00,
+      0 10px 20px rgba(0, 0, 0, 0.24),
+      inset 0 2px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .music-btn svg {
+    width: 19px;
+    height: 19px;
   }
 
   .music-volume-panel {
-    gap: 6px;
-    min-height: 50px;
-    padding: 8px;
+    gap: 5px;
+    min-height: 44px;
+    padding: 6px;
+    border-width: 2px;
+    transform: translateX(-6px) scale(0.98);
   }
 
   .music-btn--volume {
-    width: 38px;
-    height: 38px;
+    width: 30px;
+    height: 30px;
+    box-shadow:
+      0 3px 0 #d87a00,
+      inset 0 2px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .music-btn--volume svg {
+    width: 16px;
+    height: 16px;
   }
 
   .music-volume-control {
-    min-width: 96px;
-    font-size: 12px;
+    min-width: 72px;
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .music-volume-control span {
+    gap: 4px;
+  }
+
+  .music-volume-control svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .music-volume-control input {
+    height: 14px;
+  }
+
+  .music-volume-control input::-webkit-slider-thumb {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+  }
+
+  .music-volume-control input::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+
+  .music-player--location {
+    top: auto;
+    bottom: 14px;
+    left: 14px;
+    grid-template-columns: 44px;
+  }
+
+  .music-player--location .music-volume-panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 8px);
+    width: 176px;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  .music-player--location:hover .music-volume-panel,
+  .music-player--location:focus-within .music-volume-panel {
+    transform: translateY(0) scale(1);
   }
 }

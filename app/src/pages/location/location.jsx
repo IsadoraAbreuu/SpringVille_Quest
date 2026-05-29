@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Building2, Coins, GraduationCap, Home, ShoppingBasket, Trees } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, Building2, Coins, GraduationCap, Home, ShoppingBasket, Trees } from 'lucide-react';
 import springvilleFallback from '../../assets/images/fundo-springville.png';
 import casaBackground from '../../assets/images/locais/casa.jpg';
 import escolaBackground from '../../assets/images/locais/escola.jpg';
@@ -128,6 +128,9 @@ const QUESTS = {
 
 const TASK_ADVANCE_DELAY = 1800;
 const CLUE_REVEAL_DELAY = 1800;
+const COLOR_PURCHASE_COST = 1;
+const COLOR_PURCHASE_DELAY = 1250;
+const COIN_LOSS_PULSE_DELAY = 720;
 
 const NEXT_LOCATION_CLUES = {
   parque: {
@@ -196,6 +199,7 @@ export default function Location({
   selectedCharacterId = 'homer',
   totalCoins = 0,
   onEarnCoins,
+  onSpendCoins,
   onCompleteLocation,
   setCurrentPage,
 }) {
@@ -211,6 +215,9 @@ export default function Location({
   const [orderMistakes, setOrderMistakes] = useState(0);
   const [isGuideLeaving, setIsGuideLeaving] = useState(false);
   const [guideMessage, setGuideMessage] = useState('');
+  const [isBuyingColor, setIsBuyingColor] = useState(false);
+  const [coinLossPulse, setCoinLossPulse] = useState(0);
+  const [isOrderHintDismissed, setIsOrderHintDismissed] = useState(false);
 
   const currentTask = quest.tasks[taskIndex];
   const isLastTask = taskIndex === quest.tasks.length - 1;
@@ -219,7 +226,7 @@ export default function Location({
   const guideSuccessMessage = SUCCESS_MESSAGES[selectedCharacterId] || SUCCESS_MESSAGES.homer;
   const locationBadge = LOCATION_BADGES[locationId] || LOCATION_BADGES.location;
   const LocationIcon = locationBadge.Icon;
-  const shouldShowOrderHint = currentTask?.type === 'order' && orderMistakes >= 5;
+  const shouldShowOrderHint = currentTask?.type === 'order' && orderMistakes >= 5 && !isOrderHintDismissed;
   const shouldShowGuideBubble = Boolean(guideMessage) || shouldShowOrderHint;
 
   useEffect(() => {
@@ -233,6 +240,9 @@ export default function Location({
     setOrderMistakes(0);
     setIsGuideLeaving(false);
     setGuideMessage('');
+    setIsBuyingColor(false);
+    setCoinLossPulse(0);
+    setIsOrderHintDismissed(false);
   }, [locationId]);
 
   useEffect(() => {
@@ -253,7 +263,22 @@ export default function Location({
     setIsAdvancing(false);
     setOrderMistakes(0);
     setGuideMessage('');
+    setIsOrderHintDismissed(false);
   }, [currentTask]);
+
+  useEffect(() => {
+    if (!coinLossPulse) {
+      return undefined;
+    }
+
+    const coinLossTimer = window.setTimeout(() => {
+      setCoinLossPulse(0);
+    }, COIN_LOSS_PULSE_DELAY);
+
+    return () => {
+      window.clearTimeout(coinLossTimer);
+    };
+  }, [coinLossPulse]);
 
   const leaveLocationPage = (callback) => {
     setIsGuideLeaving(true);
@@ -261,6 +286,10 @@ export default function Location({
   };
 
   const moveOrderedItem = (fromIndex, toIndex) => {
+    if (fromIndex === toIndex || toIndex < 0 || toIndex >= orderedItems.length) {
+      return;
+    }
+
     setOrderedItems((items) => {
       const nextItems = [...items];
       const [movedItem] = nextItems.splice(fromIndex, 1);
@@ -299,6 +328,19 @@ export default function Location({
     leaveLocationPage(() => onCompleteLocation?.(locationId));
   };
 
+  const buyColorAndFinish = () => {
+    if (isBuyingColor) {
+      return;
+    }
+
+    setIsBuyingColor(true);
+    onSpendCoins?.(COLOR_PURCHASE_COST);
+
+    window.setTimeout(() => {
+      finishLocation();
+    }, COLOR_PURCHASE_DELAY);
+  };
+
   const returnToMap = () => {
     leaveLocationPage(() => setCurrentPage('mapa'));
   };
@@ -316,7 +358,9 @@ export default function Location({
       }
 
       if (selectedOption !== currentTask.answer) {
-        setFeedback('Quase! Tente outra alternativa.');
+        onSpendCoins?.(1);
+        setCoinLossPulse((currentPulse) => currentPulse + 1);
+        setFeedback('Quase! Voce perdeu 1 moeda, tente outra alternativa.');
         setGuideMessage('');
         return;
       }
@@ -327,12 +371,15 @@ export default function Location({
 
     if (!arraysMatch(orderedItems, currentTask.answer)) {
       const nextOrderMistakes = orderMistakes + 1;
+      onSpendCoins?.(1);
+      setCoinLossPulse((currentPulse) => currentPulse + 1);
       setOrderMistakes(nextOrderMistakes);
+      setIsOrderHintDismissed(false);
       setGuideMessage('');
       setFeedback(
         nextOrderMistakes >= 5
-          ? 'A ordem ainda nao esta certa. Use a dica para ajustar os cards.'
-          : 'A ordem ainda nao esta certa. Ajuste os cards e tente de novo.'
+          ? 'A ordem ainda nao esta certa. Voce perdeu 1 moeda. Use a dica para ajustar os cards.'
+          : 'A ordem ainda nao esta certa. Voce perdeu 1 moeda. Ajuste os cards e tente de novo.'
       );
       return;
     }
@@ -354,9 +401,14 @@ export default function Location({
             Voltar ao mapa
           </button>
 
-          <div className="location-stats" aria-label="Moedas acumuladas">
+          <div className={`location-stats${coinLossPulse ? ' location-stats--loss' : ''}`} aria-label="Moedas acumuladas">
             <span>Moedas</span>
             <strong>{totalCoins}</strong>
+            {coinLossPulse > 0 && (
+              <small key={coinLossPulse} className="location-coin-loss">
+                -1
+              </small>
+            )}
           </div>
         </header>
 
@@ -386,8 +438,18 @@ export default function Location({
               <h2>Siga a pista</h2>
               <p>{nextClue?.clue || 'Volte ao mapa para continuar a aventura.'}</p>
 
-              <button className="task-submit clue-continue" onClick={finishLocation}>
-                {locationId === 'mercado' ? 'Ver resultado final' : 'Liberar no mapa'}
+              <div className="color-purchase">
+                <span className="color-purchase__coin" aria-hidden="true">
+                  $
+                </span>
+                <div>
+                  <strong>Restaurar essa area</strong>
+                  <p>Compre para restaurar esse pedaco da cidade ate SpringVille toda voltar a ficar alegre e colorida.</p>
+                </div>
+              </div>
+
+              <button className="task-submit clue-continue" onClick={buyColorAndFinish} disabled={isBuyingColor}>
+                {isBuyingColor ? 'Colorindo...' : 'Comprar'}
               </button>
             </div>
           )}
@@ -433,6 +495,32 @@ export default function Location({
                     >
                       <span>{index + 1}</span>
                       <strong>{item}</strong>
+                      <div className="order-item__controls" aria-label={`Mover ${item}`}>
+                        <button
+                          type="button"
+                          className="order-item__control"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            moveOrderedItem(index, index - 1);
+                          }}
+                          disabled={index === 0}
+                          aria-label={`Subir ${item}`}
+                        >
+                          <ArrowUp aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          className="order-item__control"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            moveOrderedItem(index, index + 1);
+                          }}
+                          disabled={index === orderedItems.length - 1}
+                          aria-label={`Descer ${item}`}
+                        >
+                          <ArrowDown aria-hidden="true" />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -466,6 +554,14 @@ export default function Location({
                 <p>{guideMessage}</p>
               ) : (
                 <>
+                  <button
+                    type="button"
+                    className="location-guide__bubble-close"
+                    onClick={() => setIsOrderHintDismissed(true)}
+                    aria-label="Fechar dica"
+                  >
+                    x
+                  </button>
                   <p>Olha a ordem certa para destravar essa parte:</p>
                   <ol>
                     {currentTask.answer.map((item) => (
@@ -482,6 +578,16 @@ export default function Location({
             <img src={guideCharacter.activeImage} alt="" className="location-guide__image location-guide__image--active" />
           </div>
         </aside>
+      )}
+
+      {isBuyingColor && (
+        <div className="color-buy-transition" aria-live="polite">
+          <div className="color-buy-transition__burst" />
+          <div className="color-buy-transition__card">
+            <span className="color-buy-transition__coin">$</span>
+            <strong>Restaurando...</strong>
+          </div>
+        </div>
       )}
     </div>
   );
